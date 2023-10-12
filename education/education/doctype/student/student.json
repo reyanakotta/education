@@ -14,20 +14,21 @@
   "first_name",
   "middle_name",
   "last_name",
-  "user",
   "column_break_4",
   "naming_series",
-  "student_email_id",
-  "student_mobile_number",
   "joining_date",
+  "user",
+  "student_applicant",
   "image",
   "section_break_7",
+  "student_email_id",
   "date_of_birth",
   "blood_group",
   "column_break_3",
+  "student_mobile_number",
   "gender",
   "nationality",
-  "student_applicant",
+  "address_tab",
   "section_break_22",
   "address_line_1",
   "address_line_2",
@@ -35,16 +36,20 @@
   "column_break_20",
   "city",
   "state",
+  "country",
+  "relations_tab",
   "section_break_18",
   "guardians",
   "section_break_20",
   "siblings",
+  "exit_tab",
   "exit",
   "date_of_leaving",
   "leaving_certificate_number",
   "column_break_31",
   "reason_for_leaving",
-  "title"
+  "student_name",
+  "connections_tab"
  ],
  "fields": [
   {
@@ -164,8 +169,7 @@
   },
   {
    "fieldname": "section_break_22",
-   "fieldtype": "Section Break",
-   "label": "Home Address"
+   "fieldtype": "Section Break"
   },
   {
    "fieldname": "address_line_1",
@@ -197,6 +201,12 @@
    "label": "State"
   },
   {
+   "fieldname": "country",
+   "fieldtype": "Link",
+   "label": "Country",
+   "options": "Country"
+  },
+  {
    "fieldname": "section_break_18",
    "fieldtype": "Section Break",
    "label": "Guardian Details"
@@ -208,7 +218,6 @@
    "options": "Student Guardian"
   },
   {
-   "collapsible": 1,
    "fieldname": "section_break_20",
    "fieldtype": "Section Break",
    "label": "Sibling Details",
@@ -221,10 +230,8 @@
    "options": "Student Sibling"
   },
   {
-   "collapsible": 1,
    "fieldname": "exit",
-   "fieldtype": "Section Break",
-   "label": "Exit"
+   "fieldtype": "Section Break"
   },
   {
    "fieldname": "date_of_leaving",
@@ -246,18 +253,40 @@
    "label": "Reason For Leaving"
   },
   {
-   "fieldname": "title",
+   "fieldname": "student_name",
    "fieldtype": "Data",
    "hidden": 1,
-   "label": "Title"
+   "label": "Student Name"
+  },
+  {
+   "fieldname": "address_tab",
+   "fieldtype": "Tab Break",
+   "label": "Address"
+  },
+  {
+   "fieldname": "relations_tab",
+   "fieldtype": "Tab Break",
+   "label": "Relations"
+  },
+  {
+   "fieldname": "exit_tab",
+   "fieldtype": "Tab Break",
+   "label": "Exit"
+  },
+  {
+   "fieldname": "connections_tab",
+   "fieldtype": "Tab Break",
+   "label": "Connections",
+   "show_dashboard": 1
   }
  ],
  "image_field": "image",
  "links": [],
- "modified": "2020-09-07 19:28:08.914568",
+ "modified": "2023-02-06 12:25:25.197460",
  "modified_by": "Administrator",
  "module": "Education",
  "name": "Student",
+ "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [
   {
@@ -285,20 +314,12 @@
    "report": 1,
    "role": "Student",
    "share": 1
-  },
-  {
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "LMS User",
-   "share": 1
   }
  ],
- "restrict_to_domain": "Education",
  "show_name_in_global_search": 1,
+ "show_title_field_in_link": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
- "title_field": "title"
+ "states": [],
+ "title_field": "student_name"
 }

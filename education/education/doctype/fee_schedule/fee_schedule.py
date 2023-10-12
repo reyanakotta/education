@@ -110,6 +110,7 @@ def generate_fee(fee_schedule):
 				fees_doc.student = student.student
 				fees_doc.student_name = student.student_name
 				fees_doc.program = student.program
+				fees_doc.program_enrollment = student.enrollment
 				fees_doc.student_batch = student.student_batch_name
 				fees_doc.send_payment_request = doc.send_email
 				fees_doc.save()
@@ -148,14 +149,14 @@ def get_students(
 	if student_category:
 		conditions = " and pe.student_category={}".format(frappe.db.escape(student_category))
 	if academic_term:
-		conditions = " and pe.academic_term={}".format(frappe.db.escape(academic_term))
+		conditions += " and pe.academic_term={}".format(frappe.db.escape(academic_term))
 
 	students = frappe.db.sql(
 		"""
-		select pe.student, pe.student_name, pe.program, pe.student_batch_name
+		select pe.student, pe.student_name, pe.program, pe.student_batch_name, pe.name as enrollment
 		from `tabStudent Group Student` sgs, `tabProgram Enrollment` pe
 		where
-			pe.student = sgs.student and pe.academic_year = %s
+			pe.docstatus = 1 and pe.student = sgs.student and pe.academic_year = %s
 			and sgs.parent = %s and sgs.active = 1
 			{conditions}
 		""".format(

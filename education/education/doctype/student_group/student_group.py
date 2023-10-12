@@ -152,7 +152,8 @@ def get_program_enrollment(
 		from
 			`tabProgram Enrollment` pe {condition2}
 		where
-			pe.academic_year = %(academic_year)s  {condition1}
+			pe.academic_year = %(academic_year)s  
+			and pe.docstatus = 1 {condition1}
 		order by
 			pe.student_name asc
 		""".format(
@@ -193,8 +194,8 @@ def fetch_students(doctype, txt, searchfield, start, page_len, filters):
 			else [""]
 		) or [""]
 		return frappe.db.sql(
-			"""select name, title from tabStudent
-			where name in ({0}) and (`{1}` LIKE %s or title LIKE %s)
+			"""select name, student_name from tabStudent
+			where name in ({0}) and (`{1}` LIKE %s or student_name LIKE %s)
 			order by idx desc, name
 			limit %s, %s""".format(
 				", ".join(["%s"] * len(students)), searchfield
@@ -203,7 +204,7 @@ def fetch_students(doctype, txt, searchfield, start, page_len, filters):
 		)
 	else:
 		return frappe.db.sql(
-			"""select name, title from tabStudent
+			"""select name, student_name from tabStudent
 			where `{0}` LIKE %s or title LIKE %s
 			order by idx desc, name
 			limit %s, %s""".format(

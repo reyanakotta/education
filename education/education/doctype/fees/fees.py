@@ -26,6 +26,7 @@ class Fees(AccountsController):
 	def validate(self):
 		self.calculate_total()
 		self.set_missing_accounts_and_fields()
+		self.validate_enrollment()
 
 	def set_missing_accounts_and_fields(self):
 		if not self.company:
@@ -46,6 +47,17 @@ class Fees(AccountsController):
 			self.cost_center = accounts_details.cost_center
 		if not self.student_email:
 			self.student_email = self.get_student_emails()
+
+	def validate_enrollment(self):
+		enrollment_student = frappe.db.get_value(
+			"Program Enrollment", self.program_enrollment, "student"
+		)
+		if enrollment_student != self.student:
+			frappe.throw(
+				_("Invalid Enrollment {0} for student {1}").format(
+					frappe.bold(self.program_enrollment), frappe.bold(self.student)
+				)
+			)
 
 	def get_student_emails(self):
 		student_emails = frappe.db.sql_list(
@@ -93,7 +105,7 @@ class Fees(AccountsController):
 			)
 
 	def on_cancel(self):
-		self.ignore_linked_doctypes = ("GL Entry", "Stock Ledger Entry")
+		self.ignore_linked_doctypes = ("GL Entry", "Payment Ledger Entry")
 		make_reverse_gl_entries(voucher_type=self.doctype, voucher_no=self.name)
 		# frappe.db.set(self, 'status', 'Cancelled')
 

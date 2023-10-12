@@ -12,14 +12,18 @@ from frappe.utils import comma_and, get_link_to_form, getdate
 
 class ProgramEnrollment(Document):
 	def validate(self):
+		self.set_student_name()
 		self.validate_duplication()
 		self.validate_academic_year()
 		if self.academic_term:
 			self.validate_academic_term()
-		if not self.student_name:
-			self.student_name = frappe.db.get_value("Student", self.student, "title")
+
 		if not self.courses:
 			self.extend("courses", self.get_courses())
+
+	def set_student_name(self):
+		if not self.student_name:
+			self.student_name = frappe.db.get_value("Student", self.student, "student_name")
 
 	def on_submit(self):
 		self.update_student_joining_date()
@@ -65,17 +69,15 @@ class ProgramEnrollment(Document):
 				)
 
 	def validate_duplication(self):
-		enrollment = frappe.get_all(
-			"Program Enrollment",
-			filters={
+		enrollment = frappe.db.exists(
+			"Program Enrollment", {
 				"student": self.student,
 				"program": self.program,
 				"academic_year": self.academic_year,
 				"academic_term": self.academic_term,
 				"docstatus": ("<", 2),
 				"name": ("!=", self.name),
-			},
-		)
+			})
 		if enrollment:
 			frappe.throw(_("Student is already enrolled."))
 
@@ -131,14 +133,17 @@ class ProgramEnrollment(Document):
 		)
 
 	def create_course_enrollments(self):
-		student = frappe.get_doc("Student", self.student)
-		course_list = [course.course for course in self.courses]
-		for course_name in course_list:
-			student.enroll_in_course(
-				course_name=course_name,
-				program_enrollment=self.name,
-				enrollment_date=self.enrollment_date,
-			)
+		for course in self.courses:
+			filters = {
+				"student": self.student,
+				"course": course.course,
+				"program_enrollment": self.name,
+			}
+			if not frappe.db.exists("Course Enrollment", filters):
+				filters.update(
+					{"doctype": "Course Enrollment", "enrollment_date": self.enrollment_date}
+				)
+				frappe.get_doc(filters).save()
 
 	def get_all_course_enrollments(self):
 		course_enrollment_names = frappe.get_list(
@@ -174,6 +179,7 @@ def get_program_courses(doctype, txt, searchfield, start, page_len, filters):
 		frappe.msgprint(_("Please select a Program first."))
 		return []
 
+	doctype = "Program Course"
 	return frappe.db.sql(
 		"""select course, course_name from `tabProgram Course`
 		where  parent = %(program)s and course like %(txt)s {match_cond}
@@ -214,7 +220,7 @@ def get_students(doctype, txt, searchfield, start, page_len, filters):
 
 	return frappe.db.sql(
 		"""select
-			name, title from tabStudent
+			name, student_name from tabStudent
 		where
 			name not in (%s)
 		and

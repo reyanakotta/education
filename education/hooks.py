@@ -19,6 +19,7 @@ required_apps = ["erpnext"]
 # include js, css files in header of desk.html
 # app_include_css = "/assets/education/css/education.css"
 # app_include_js = "/assets/education/js/education.js"
+app_include_js = "education.bundle.js"
 
 # include js, css files in header of web template
 # web_include_css = "/assets/education/css/education.css"
@@ -28,9 +29,7 @@ required_apps = ["erpnext"]
 # website_theme_scss = "education/public/scss/website"
 
 # website
-update_website_context = [
-	"education.education.doctype.education_settings.education_settings.update_website_context",
-]
+update_website_context = []
 
 website_generators = ["Student Admission"]
 
@@ -105,8 +104,9 @@ global_search_doctypes = {
 	]
 }
 
+# fixed route to education setup
 domains = {
-	"Education": "education.setup",
+	"Education": "education.education.setup",
 }
 # include js, css files in header of web form
 # webform_include_js = {"doctype": "public/js/doctype.js"}
@@ -151,7 +151,7 @@ domains = {
 # ------------
 
 # before_install = "education.install.before_install"
-# after_install = "education.install.after_install"
+after_install = "education.install.after_install"
 
 # Uninstallation
 # ------------

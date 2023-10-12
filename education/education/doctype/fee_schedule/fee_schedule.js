@@ -3,11 +3,6 @@
 
 frappe.provide("erpnext.accounts.dimensions");
 frappe.ui.form.on('Fee Schedule', {
-	setup: function(frm) {
-		frm.add_fetch('fee_structure', 'receivable_account', 'receivable_account');
-		frm.add_fetch('fee_structure', 'income_account', 'income_account');
-		frm.add_fetch('fee_structure', 'cost_center', 'cost_center');
-	},
 
 	company: function(frm) {
 		erpnext.accounts.dimensions.update_dimension(frm, frm.doctype);
@@ -34,12 +29,22 @@ frappe.ui.form.on('Fee Schedule', {
 			};
 		});
 
+		frm.set_query('academic_term', function(doc) {
+			return {
+				filters: {
+					'academic_year': doc.academic_year
+				}
+			};
+		});
+
 		frm.set_query('student_group', 'student_groups', function() {
 			return {
-				'program': frm.doc.program,
-				'academic_term': frm.doc.academic_term,
-				'academic_year': frm.doc.academic_year,
-				'disabled': 0
+				filters: {
+					'program': frm.doc.program,
+					'academic_term': frm.doc.academic_term,
+					'academic_year': frm.doc.academic_year,
+					'disabled': 0
+				}
 			};
 		});
 
